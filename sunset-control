@@ -1,0 +1,45 @@
+#!/bin/bash
+# Sunset Control - Juster hyprsunset fargetemperatur interaktivt
+
+# Array med temperaturer og beskrivelser
+# Format: "temperatur:beskrivelse"
+temps=(
+    "6500:☀️  Dag (ingen filter)"
+    "5500:🌤️  Lett filter"
+    "5000:🌥️  Sent ettermiddag"
+    "4500:🌆  Tidlig kveld"
+    "4000:🌇  Kveld"
+    "3500:🌃  Sen kveld"
+    "3000:🌙  Natt"
+    "2500:🌑  Dyp natt"
+    "2000:😴  Ekstra varm"
+)
+
+# Vis fzf-menu og få valget
+choice=$(printf '%s\n' "${temps[@]}" | fzf \
+    --prompt="🌅 Velg fargetemperatur: " \
+    --height=40% \
+    --border=rounded \
+    --reverse \
+    --header="Bruk ↑↓ eller søk, Enter for å velge")
+
+# Hvis brukeren valgte noe (ikke ESC)
+if [ -n "$choice" ]; then
+    # Trekk ut temperatur-tallet (før kolon)
+    temp=$(echo "$choice" | cut -d: -f1)
+    
+    # Stopp eksisterende hyprsunset
+    pkill -9 hyprsunset 2>/dev/null
+    
+    # Vent litt for å være sikker på at prosessen er død
+    sleep 0.05
+    
+    # Start ny prosess som overlever terminal-lukking
+    nohup hyprsunset -t "$temp" > /dev/null 2>&1 &
+    
+    # Løsriv prosessen fra terminalen
+    disown
+    
+    # Vis notifikasjon
+    notify-send "Fargetemperatur" "Satt til ${temp}K" -t 2000
+fi
