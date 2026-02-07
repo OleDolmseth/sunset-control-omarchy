@@ -21,6 +21,17 @@ Interaktiv fargetemperatur-kontroll for hyprsunset med fzf-meny.
 
 ## Installasjon
 
+### Automatisk (anbefalt)
+```bash
+git clone https://github.com/dittbrukernavn/sunset-control-omarchy.git
+cd sunset-control-omarchy
+./install.sh
+```
+
+### Manuell installasjon
+
+Se [Manuell Installasjon](#manuell-installasjon) lenger ned.
+
 ### 1. Installer avhengigheter
 ```bash
 sudo pacman -S fzf
